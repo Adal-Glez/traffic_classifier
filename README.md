@@ -1,54 +1,145 @@
-## Project: Build a Traffic Sign Recognition Program
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+# **Traffic Sign Recognition** 
 
-Overview
+### Adalberto Gonzalez
+Self-Driving Car Engineer Nanodegree Program
 ---
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to classify traffic signs. You will train and validate a model so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). After the model is trained, you will then try out your model on images of German traffic signs that you find on the web.
 
-We have included an Ipython notebook that contains further instructions 
-and starter code. Be sure to download the [Ipython notebook](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb). 
+The following Writeup includes all the rubric points and how you addressed each one of them for the folowing code [project code](https://github.com/adl-aleb/traffic_classifier/blob/master/Traffic_Sign_Classifier.ipynb)
 
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
-
-To meet specifications, the project will require submitting three files: 
-* the Ipython notebook with the code
-* the code exported as an html file
-* a writeup report either as a markdown or pdf file 
-
-Creating a Great Writeup
 ---
-A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/481/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
+**Build a Traffic Sign Recognition Project**
 
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
+In this project, I've used what I've learned about deep neural networks and convolutional neural networks to classify traffic signs. 
+I've trained and validated a model so it can classify traffic sign images using the German Traffic Sign Dataset. After my model was trained, I tryed my model on images of German traffic signs that I found on the web.
 
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
-
-The Project
----
-The goals / steps of this project are the following:
-* Load the data set
+The steps of this project are the following:
+* Load the data set (see below for links to the project data set)
 * Explore, summarize and visualize the data set
 * Design, train and test a model architecture
 * Use the model to make predictions on new images
 * Analyze the softmax probabilities of the new images
-* Summarize the results with a written report
 
-### Dependencies
-This lab requires:
 
-* [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
+## 1. Dataset Exploration
 
-The lab enviroment can be created with CarND Term1 Starter Kit. Click [here](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) for the details.
+### Dataset Summary
+code cell 3
+* The size of training set is 34799
+* The size of test set is 12630
+* The shape of a traffic sign image is 32x32 in color (32,32,3) 
+* The number of unique classes/labels in the data set is 43
 
-### Dataset and Repository
+#### Exploratory Visualization
+code cell 4-7  
 
-1. Download the data set. The classroom has a link to the data set in the "Project Instructions" content. This is a pickled dataset in which we've already resized the images to 32x32. It contains a training, validation and test set.
-2. Clone the project, which contains the Ipython notebook and the writeup template.
-```sh
-git clone https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project
-cd CarND-Traffic-Sign-Classifier-Project
-jupyter notebook Traffic_Sign_Classifier.ipynb
+Here is an exploratory visualization of the data set. 
+
+<img src="./writeupimgs/A_uniques.png" width="800" />
+ <figcaption>
+ <p></p> 
+ <p style="text-align: center;"> "here we take a look at the unique images that are contained into our data set"</p> 
+ </figcaption> 
+
+<img src="./writeupimgs/B_bar.png" width="800" />
+ <figcaption>
+ <p></p> 
+ <p style="text-align: center;"> "On the barchart we can see the number of samples that we have available"</p> 
+ </figcaption> 
+
+## 2. Design and Test a Model Architecture
+
+### Preprocessing
+code cell 8-14
+
+As a first step, I decided to convert the images to grayscale because the color is not relevant for the detection since all images are different and then i normalized the images because some of them seem to have different color intensity
+
+<img src="./writeupimgs/C_unique_color.png" width="120" />
+<img src="./writeupimgs/C_unique_gray.png" width="120" />
+ <figcaption>
+ <p></p> 
+ <p style="text-align: center;"> "Here is an example of a traffic sign image before and after grayscaling and normalization"</p> 
+ </figcaption> 
+
+### Model Architecture
+code cell 15-17.  
+
+* **Input : Convolutional.** accepts a 32x32xC image as input. where C is 1 since its grayscale.
+
+
+* **Layer 1: Convolutional.** 1 stride, Output shape 28x28x6.
+* **Activation relu.** computes rectified linear.
+* **Pooling.** max, stride 2, Output shape should be 14x14x6.
+* **Layer 2: Convolutional.** 1 stride, Output shape should be 10x10x16.
+* **Activation relu.** Compute rectified linear.
+* **Pooling.**  stride 2, Output shape 5x5x16.
+* **Flatten.** Flatten the output shape of the final pooling layer such that it's 1D instead of 3D.
+* **Layer 3: Fully Connected.**  120 outputs.
+* **Activation relu.** compute rectified linear.
+* **Layer 4: Fully Connected.**  84 outputs.
+* **Activation relu.** compute rectified linear.
+* **Dropout.** Compute dropout.
+* **Layer 5: Fully Connected (Logits).** This should have 43 outputs.
+
+
+* **Output .** 1 Return the result of the last fully connected layer.
+
+
+
+### Model Training
+to train the model i used used Adam optimizer with learning rate = 0.001. Batch size of 1284 was used and training was done for 30 epochs. The keep_prob for dropout layers was chosen to be 0.75 for conv layers .
+for a 
+
+### Solution Approach
+
+This model is based on LeNet-5 architecture [LeNet-5](http://yann.lecun.com/exdb/lenet/) and the reason i used it its because has proven to be a good start point and then based on the initial result of 0.83 accuracy i decided to make adjustments,
+* lenet inital model resulted in .83 acccuracy
+* add dropout increasing acccuracy to .88, 
+* increae EPOCHS for a 0.928 Valid Accuracy
+* grayscale and normalize the image for an up to 0.941 Valid Accuracy
+
+My final model results were:
+* Valid Accuracy: 0.936 
+* Test Accuracy = 0.918
+
+<img src="./writeupimgs/D_acc.png" width="800" />
+ <figcaption>
+ <p></p> 
+ <p style="text-align: center;"> "Valid Accuracy vs Epochs"</p> 
+ </figcaption> 
+
+## 3. Test a Model on New Images
+
+### Acquiring New Images
+Here are five German traffic signs that I found on the web:
+    
+<img src="./writeupimgs/E_webimg.png" width="800" />
+ <figcaption>
+ <p></p> 
+ <p style="text-align: center;"> "web images"</p> 
+ </figcaption> 
+i found the most challenging to predict would be the 1st one since we have several similitudes with another speed signs, however we have a good quantity of train images to overcome this situation, but thats not the case of the 3th one the stop sonce we have fewer images to "teach"
+
+### Performance on New Images
+our model predicted well and we recieved **a 100% Accuracy** overall and the Prediction seems to be consitent between what was expected and the outcome
+* expected:  [ 1 13 14 35 38]
+* prediction:[ 1 13 14 35 38]
+
+however its only 5 images a lerger set of images would be adequate to confirm if this 100% is definitive 
+
+### Model Certainty - Softmax Probabilities
+our model has high certanty for this images the difference is 
+
+<img src="./writeupimgs/F_webimg_top_k.png" width="800" />
+ <figcaption>
+ <p></p> 
+ <p style="text-align: center;"> "Certainty - probabilities"</p> 
+ </figcaption> 
+
+Thank you for reading.
+
+Adalberto
+
+
+```python
+
 ```
-
-### Requirements for Submission
-Follow the instructions in the `Traffic_Sign_Classifier.ipynb` notebook and write the project report using the writeup template as a guide, `writeup_template.md`. Submit the project code and writeup document.
